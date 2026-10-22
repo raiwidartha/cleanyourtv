@@ -54,15 +54,6 @@ adb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity
 
 ---
 
-## Author & Kontributor
-
-- **I Nyoman Rai Widartha Kesuma, S.Kom., M.Kom.**
-  - D4 Teknologi Rekayasa Perangkat Lunak (TRPL), Politeknik Negeri Bali (PNB)
-  - GitHub: [@raiwidartha](https://github.com/raiwidartha)
-  - Email: widarthakesuma@gmail.com
-
----
-
 ## Lisensi
 
 Proyek ini dirilis di bawah lisensi [MIT](LICENSE). Font Outfit di bawah lisensi SIL Open Font License.
