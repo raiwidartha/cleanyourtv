@@ -22,6 +22,9 @@ public final class LauncherSettingsActivity extends Activity {
     private TextView wallpaperChoice;
     private TextView wallpaperIntervalChoice;
     private TextView ambientGlowChoice;
+    private TextView dockOpacityChoice;
+    private TextView hinduCalendarChoice;
+    private TextView hinduCalendarCountChoice;
     private TextView animationsChoice;
     private TextView advancedChoice;
     private TextView followThemeChoice;
@@ -31,6 +34,9 @@ public final class LauncherSettingsActivity extends Activity {
     private boolean advancedEffects;
     private boolean ambientGlow;
     private int rotationMinutes;
+    private int dockOpacity;
+    private boolean hinduCalendarEnabled;
+    private int hinduCalendarCount;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -44,6 +50,9 @@ public final class LauncherSettingsActivity extends Activity {
         advancedEffects = config.animations && config.advancedEffects;
         ambientGlow = config.ambientGlow;
         rotationMinutes = config.wallpaperRotationMinutes;
+        dockOpacity = config.dockOpacity;
+        hinduCalendarEnabled = config.hinduCalendarEnabled;
+        hinduCalendarCount = config.hinduCalendarCount;
 
         int[] ids = {R.id.columns4, R.id.columns5, R.id.columns6, R.id.columns7};
         for (int i = 0; i < ids.length; i++) {
@@ -86,6 +95,17 @@ public final class LauncherSettingsActivity extends Activity {
             setResult(RESULT_OK);
             refresh();
         });
+        dockOpacityChoice = findViewById(R.id.dockOpacityChoice);
+        dockOpacityChoice.setOnClickListener(v -> showDockOpacityPicker());
+        hinduCalendarChoice = findViewById(R.id.hinduCalendarChoice);
+        hinduCalendarChoice.setOnClickListener(v -> {
+            hinduCalendarEnabled = !hinduCalendarEnabled;
+            choices.edit().putBoolean(Config.HINDU_CALENDAR_KEY, hinduCalendarEnabled).apply();
+            setResult(RESULT_OK);
+            refresh();
+        });
+        hinduCalendarCountChoice = findViewById(R.id.hinduCalendarCountChoice);
+        hinduCalendarCountChoice.setOnClickListener(v -> showHinduCalendarCountPicker());
         animationsChoice = findViewById(R.id.animationsChoice);
         animationsChoice.setOnClickListener(v -> {
             animations = !animations;
@@ -114,7 +134,10 @@ public final class LauncherSettingsActivity extends Activity {
             choices.edit().remove("columns").remove(Config.ROWS_BELOW_DOCK_KEY).remove("animations")
                     .remove("advanced_effects").remove(Config.WALLPAPER_CHOICE_KEY)
                     .remove(Config.ROTATION_MINUTES_KEY)
-                    .remove(Config.AMBIENT_GLOW_KEY).commit();
+                    .remove(Config.AMBIENT_GLOW_KEY)
+                    .remove(Config.DOCK_OPACITY_KEY)
+                    .remove(Config.HINDU_CALENDAR_KEY)
+                    .remove(Config.HINDU_CALENDAR_COUNT_KEY).commit();
             Config current = Config.load(this);
             columns = current.columns;
             rowsBelowDock = current.rowsBelowDock;
@@ -122,6 +145,9 @@ public final class LauncherSettingsActivity extends Activity {
             advancedEffects = current.animations && current.advancedEffects;
             ambientGlow = current.ambientGlow;
             rotationMinutes = current.wallpaperRotationMinutes;
+            dockOpacity = current.dockOpacity;
+            hinduCalendarEnabled = current.hinduCalendarEnabled;
+            hinduCalendarCount = current.hinduCalendarCount;
             setResult(RESULT_OK);
             refresh();
         });
@@ -221,6 +247,70 @@ public final class LauncherSettingsActivity extends Activity {
                 .show();
     }
 
+    private void showDockOpacityPicker() {
+        final int[] values = {100, 75, 50, 25, 0};
+        final String[] labels = {
+                getString(R.string.dock_opacity_100),
+                getString(R.string.dock_opacity_75),
+                getString(R.string.dock_opacity_50),
+                getString(R.string.dock_opacity_25),
+                getString(R.string.dock_opacity_0)
+        };
+        int checked = 2; // 50% default
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == dockOpacity) {
+                checked = i;
+                break;
+            }
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dock_opacity_dialog_title)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    dialog.dismiss();
+                    dockOpacity = values[which];
+                    choices.edit().putInt(Config.DOCK_OPACITY_KEY, dockOpacity).apply();
+                    setResult(RESULT_OK);
+                    refresh();
+                })
+                .setNeutralButton(R.string.wallpaper_theme_default, (dialog, which) -> {
+                    choices.edit().remove(Config.DOCK_OPACITY_KEY).apply();
+                    Config cfg = Config.load(this);
+                    dockOpacity = cfg.dockOpacity;
+                    setResult(RESULT_OK);
+                    refresh();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void showHinduCalendarCountPicker() {
+        final int[] values = {1, 2, 3, 4};
+        final String[] labels = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            labels[i] = getString(R.string.hindu_calendar_events_count, values[i]);
+        }
+        int checked = hinduCalendarCount - 1;
+        if (checked < 0 || checked >= values.length) checked = 0;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hindu_calendar_count_dialog_title)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    dialog.dismiss();
+                    hinduCalendarCount = values[which];
+                    choices.edit().putInt(Config.HINDU_CALENDAR_COUNT_KEY, hinduCalendarCount).apply();
+                    setResult(RESULT_OK);
+                    refresh();
+                })
+                .setNeutralButton(R.string.wallpaper_theme_default, (dialog, which) -> {
+                    choices.edit().remove(Config.HINDU_CALENDAR_COUNT_KEY).apply();
+                    Config cfg = Config.load(this);
+                    hinduCalendarCount = cfg.hinduCalendarCount;
+                    setResult(RESULT_OK);
+                    refresh();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     private static int indexOf(List<File> images, String name) {
         if (name == null) return -1;
         for (int i = 0; i < images.size(); i++) {
@@ -268,6 +358,22 @@ public final class LauncherSettingsActivity extends Activity {
         wallpaperIntervalChoice.setText(getString(R.string.wallpaper_interval_label, intervalText));
         ambientGlowChoice.setText(getString(R.string.ambient_glow_label,
                 getString(ambientGlow ? R.string.on : R.string.off)));
+
+        String dockOpacityLabel;
+        if (dockOpacity == 100) dockOpacityLabel = getString(R.string.dock_opacity_100);
+        else if (dockOpacity == 75) dockOpacityLabel = getString(R.string.dock_opacity_75);
+        else if (dockOpacity == 50) dockOpacityLabel = getString(R.string.dock_opacity_50);
+        else if (dockOpacity == 25) dockOpacityLabel = getString(R.string.dock_opacity_25);
+        else if (dockOpacity == 0) dockOpacityLabel = getString(R.string.dock_opacity_0);
+        else dockOpacityLabel = dockOpacity + "%";
+        dockOpacityChoice.setText(getString(R.string.dock_opacity_label, dockOpacityLabel));
+
+        hinduCalendarChoice.setText(getString(R.string.hindu_calendar_label,
+                getString(hinduCalendarEnabled ? R.string.on : R.string.off)));
+        hinduCalendarCountChoice.setText(getString(R.string.hindu_calendar_count_label, hinduCalendarCount));
+        hinduCalendarCountChoice.setEnabled(hinduCalendarEnabled);
+        hinduCalendarCountChoice.setAlpha(hinduCalendarEnabled ? 1f : 0.5f);
+
         followThemeChoice.setSelected(!hasOnTvChoices());
     }
 
@@ -276,7 +382,10 @@ public final class LauncherSettingsActivity extends Activity {
                 || choices.contains("animations") || choices.contains("advanced_effects")
                 || choices.contains(Config.WALLPAPER_CHOICE_KEY)
                 || choices.contains(Config.ROTATION_MINUTES_KEY)
-                || choices.contains(Config.AMBIENT_GLOW_KEY);
+                || choices.contains(Config.AMBIENT_GLOW_KEY)
+                || choices.contains(Config.DOCK_OPACITY_KEY)
+                || choices.contains(Config.HINDU_CALENDAR_KEY)
+                || choices.contains(Config.HINDU_CALENDAR_COUNT_KEY);
     }
 
     private void open(Intent intent) {

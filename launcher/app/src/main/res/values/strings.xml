@@ -114,4 +114,16 @@
     <!-- Cinematic top shelf (cinematic_home): the line under the focused dock app's name; %1$s is when it was
          last opened, e.g. "5 minutes ago" or "yesterday, 9:40 pm". -->
     <string name="last_opened">Last opened %1$s</string>
+
+    <string name="hindu_calendar_label">Balinese Hindu Calendar: %1$s</string>
+    <string name="hindu_calendar_count_label">Upcoming Holy Days Shown: %1$d</string>
+    <string name="hindu_calendar_count_dialog_title">Upcoming Holy Days to Show</string>
+    <string name="hindu_calendar_events_count">%1$d Upcoming Event(s)</string>
+    <string name="dock_opacity_label">Dock Background Opacity: %1$s</string>
+    <string name="dock_opacity_dialog_title">Dock Background Opacity</string>
+    <string name="dock_opacity_100">100% (Solid)</string>
+    <string name="dock_opacity_75">75% (High)</string>
+    <string name="dock_opacity_50">50% (Standard)</string>
+    <string name="dock_opacity_25">25% (Low)</string>
+    <string name="dock_opacity_0">0% (Fully Transparent)</string>
 </resources>

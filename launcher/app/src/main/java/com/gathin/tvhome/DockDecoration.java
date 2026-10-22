@@ -14,18 +14,31 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
 
     private final int dockSize;
     private final float density;
+    private final int opacityPercent;
     private final Paint band = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint edge = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF rect = new RectF();
 
     /** @param translucent the cinematic shelf's band: the artwork and the glow show through it. */
     DockDecoration(int dockSize, float density, boolean translucent) {
+        this(dockSize, density, translucent, 50);
+    }
+
+    DockDecoration(int dockSize, float density, boolean translucent, int opacityPercent) {
         this.dockSize = dockSize;
         this.density = density;
-        band.setColor(translucent ? 0x8C121014 : 0xFF141416);
+        this.opacityPercent = Math.max(0, Math.min(100, opacityPercent));
+        
+        float factor = this.opacityPercent / 100f;
+        int maxBandAlpha = translucent ? 0x8C : 0xFF;
+        int maxEdgeAlpha = translucent ? 0x26 : 0x1F;
+        int bandAlpha = Math.round(maxBandAlpha * factor);
+        int edgeAlpha = Math.round(maxEdgeAlpha * factor);
+
+        band.setColor((bandAlpha << 24) | 0x121014);
         edge.setStyle(Paint.Style.STROKE);
         edge.setStrokeWidth(density);
-        edge.setColor(translucent ? 0x26FFFFFF : 0x1FFFFFFF);
+        edge.setColor((edgeAlpha << 24) | 0xFFFFFF);
     }
 
     @Override
@@ -59,7 +72,7 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
                 rect.union(l, t, r, b);
             }
         }
-        if (!any) return;
+        if (!any || opacityPercent <= 0) return;
         float pad = 14 * density;
         rect.inset(-pad, -pad);
         float radius = 26 * density;

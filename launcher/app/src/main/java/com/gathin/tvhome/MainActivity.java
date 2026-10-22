@@ -214,6 +214,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private boolean currentAmbientGlow;
     private int currentRotationMinutes;
     private boolean ambientGlow;
+    private boolean hinduCalendarEnabled;
+    private int hinduCalendarCount;
+    private int currentDockOpacity;
     private TextView hinduHolyDayView;
     private TextView weatherView;
     private View btnBoost;
@@ -289,6 +292,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         currentAmbientGlow = cfg.ambientGlow;
         currentRotationMinutes = cfg.wallpaperRotationMinutes;
         ambientGlow = cfg.ambientGlow;
+        hinduCalendarEnabled = cfg.hinduCalendarEnabled;
+        hinduCalendarCount = cfg.hinduCalendarCount;
+        currentDockOpacity = cfg.dockOpacity;
         settingsKeycodes = cfg.settingsKeycodes;
         settingsKeyPanel = cfg.settingsKeyPanel;
         COLUMNS = cfg.columns;
@@ -415,7 +421,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             public void onChildViewDetachedFromWindow(@NonNull View v) {
             }
         });
-        if (dockRow) grid.addItemDecoration(new DockDecoration(COLUMNS, density, cinematic));
+        if (dockRow) grid.addItemDecoration(new DockDecoration(COLUMNS, density, cinematic, currentDockOpacity));
         if (animations) {
             int enterAnim = reducedMotion ? R.anim.tile_enter_reduced : R.anim.tile_enter;
             float enterDelay = reducedMotion ? 0f : 0.06f;
@@ -615,7 +621,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         String choice = choices.getString(Config.WALLPAPER_CHOICE_KEY, null);
         boolean glow = choices.getBoolean(Config.AMBIENT_GLOW_KEY, currentAmbientGlow);
         int rotMin = choices.getInt(Config.ROTATION_MINUTES_KEY, currentRotationMinutes);
-        if (!java.util.Objects.equals(currentWallpaperChoice, choice) || currentAmbientGlow != glow || currentRotationMinutes != rotMin) {
+        boolean hinduEnabled = choices.getBoolean(Config.HINDU_CALENDAR_KEY, hinduCalendarEnabled);
+        int hinduCount = choices.getInt(Config.HINDU_CALENDAR_COUNT_KEY, hinduCalendarCount);
+        int dockOp = choices.getInt(Config.DOCK_OPACITY_KEY, currentDockOpacity);
+        if (!java.util.Objects.equals(currentWallpaperChoice, choice) || currentAmbientGlow != glow || currentRotationMinutes != rotMin
+                || hinduCalendarEnabled != hinduEnabled || hinduCalendarCount != hinduCount || currentDockOpacity != dockOp) {
             recreate();
             return;
         }
@@ -1839,9 +1849,18 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void updateHinduHolyDay() {
         if (hinduHolyDayView == null) return;
-        String holyDay = BaliHinduCalendar.getNextHolyDay();
-        if (holyDay != null && !holyDay.isEmpty()) {
-            hinduHolyDayView.setText(holyDay);
+        if (!hinduCalendarEnabled) {
+            hinduHolyDayView.setVisibility(View.GONE);
+            return;
+        }
+        java.util.List<String> events = BaliHinduCalendar.getNextHolyDays(hinduCalendarCount);
+        if (events != null && !events.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < events.size(); i++) {
+                if (i > 0) sb.append("  •  ");
+                sb.append(events.get(i));
+            }
+            hinduHolyDayView.setText(sb.toString());
             hinduHolyDayView.setVisibility(View.VISIBLE);
         } else {
             hinduHolyDayView.setVisibility(View.GONE);

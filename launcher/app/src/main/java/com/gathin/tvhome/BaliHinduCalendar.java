@@ -1,9 +1,11 @@
 package com.gathin.tvhome;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -139,14 +141,17 @@ public final class BaliHinduCalendar {
 
     private BaliHinduCalendar() {}
 
-    public static String getNextHolyDay() {
+    public static List<String> getNextHolyDays(int maxEvents) {
+        List<String> results = new ArrayList<>();
+        if (maxEvents <= 0) return results;
+
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Makassar"));
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        for (int i = 0; i <= 45; i++) {
+        for (int i = 0; i <= 60 && results.size() < maxEvents; i++) {
             Calendar target = (Calendar) cal.clone();
             target.add(Calendar.DAY_OF_YEAR, i);
             long diffDays = Math.round((double)(target.getTimeInMillis() - ANCHOR_MILLIS) / (24 * 60 * 60 * 1000));
@@ -172,14 +177,29 @@ public final class BaliHinduCalendar {
                 String eventName = sb.toString();
                 String dateStr = FMT_DATE.format(targetDate);
                 if (i == 0) {
-                    return "🪔 Rahina " + eventName + " (Hari ini)";
+                    results.add("🪔 Rahina " + eventName + " (Hari ini)");
                 } else if (i == 1) {
-                    return "🪔 " + eventName + " (Besok, " + dateStr + ")";
+                    results.add("🪔 " + eventName + " (Besok, " + dateStr + ")");
                 } else {
-                    return "🪔 " + eventName + " (" + dateStr + " · " + i + " hari lagi)";
+                    results.add("🪔 " + eventName + " (" + dateStr + " · " + i + " hari lagi)");
                 }
             }
         }
-        return "";
+        return results;
+    }
+
+    public static String getNextHolyDaysFormatted(int maxEvents) {
+        List<String> list = getNextHolyDays(maxEvents);
+        if (list.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) sb.append("\n");
+            sb.append(list.get(i));
+        }
+        return sb.toString();
+    }
+
+    public static String getNextHolyDay() {
+        return getNextHolyDaysFormatted(1);
     }
 }

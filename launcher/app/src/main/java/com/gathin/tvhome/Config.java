@@ -38,6 +38,9 @@ final class Config {
     static final String WALLPAPER_CHOICE_KEY = "wallpaper_choice";
     static final String ROTATION_MINUTES_KEY = "rotation_minutes";
     static final String AMBIENT_GLOW_KEY = "ambient_glow";
+    static final String HINDU_CALENDAR_KEY = "hindu_calendar_enabled";
+    static final String HINDU_CALENDAR_COUNT_KEY = "hindu_calendar_count";
+    static final String DOCK_OPACITY_KEY = "dock_opacity";
     private static final String THEME_REVISION_NAME = "theme_revision";
     private static final String THEME_SIGNATURE_KEY = "theme_signature";
 
@@ -100,6 +103,9 @@ final class Config {
     final int wallpaperDim;
     final String wallpaperChoice;
     final boolean ambientGlow;
+    final boolean hinduCalendarEnabled;
+    final int hinduCalendarCount;
+    final int dockOpacity;
     /** Whether the overlay file was present and parsed. */
     final boolean overlayApplied;
     /** Festive skin from a theme (festival, festival_until, greeting, accent_color); {@link Festival#NONE} if none. */
@@ -116,7 +122,7 @@ final class Config {
                    boolean shamsiDate, String greetingName, boolean moduleCards, boolean reducedMotion, boolean dockTitle, boolean dockRow, boolean reorderButton, String vpnApp,
                    boolean showHomeSettingsShortcut, boolean showStats, boolean appLibrary, int backgroundColor, int skyIntensity,
                    int[] settingsKeycodes, boolean settingsKeyPanel, boolean wallpaperEnabled, File wallpaper, List<File> wallpapers,
-                   int wallpaperRotationMinutes, int wallpaperDim, String wallpaperChoice, boolean ambientGlow, boolean overlayApplied,
+                   int wallpaperRotationMinutes, int wallpaperDim, String wallpaperChoice, boolean ambientGlow, boolean hinduCalendarEnabled, int hinduCalendarCount, int dockOpacity, boolean overlayApplied,
                    Festival festival, int[] inputKeycodes, List<String> appKeys,
                    List<RaceWeekend.Race> raceCalendar, boolean cinematicHome) {
         this.inputKeycodes = inputKeycodes;
@@ -158,6 +164,9 @@ final class Config {
         this.wallpaperDim = wallpaperDim;
         this.wallpaperChoice = wallpaperChoice;
         this.ambientGlow = ambientGlow;
+        this.hinduCalendarEnabled = hinduCalendarEnabled;
+        this.hinduCalendarCount = hinduCalendarCount;
+        this.dockOpacity = dockOpacity;
         this.overlayApplied = overlayApplied;
         this.festival = festival;
         this.raceCalendar = Collections.unmodifiableList(raceCalendar);
@@ -292,13 +301,21 @@ final class Config {
 
         boolean ambientGlow = choices.getBoolean(AMBIENT_GLOW_KEY, json == null || bool(json, "ambient_glow", true));
 
+        boolean hinduCalendarEnabled = choices.getBoolean(HINDU_CALENDAR_KEY, true);
+        int hinduCalendarCount = choices.getInt(HINDU_CALENDAR_COUNT_KEY, 1);
+        if (hinduCalendarCount < 1 || hinduCalendarCount > 4) hinduCalendarCount = 1;
+
+        int defaultDockOpacity = json == null ? 50 : integer(json, "dock_opacity", 50, 0, 100);
+        int dockOpacity = choices.getInt(DOCK_OPACITY_KEY, defaultDockOpacity);
+        if (dockOpacity < 0 || dockOpacity > 100) dockOpacity = 50;
+
         return new Config(dock, fillDock, hidden, liveTv, liveTvAction, packageMap(launchActions), packageMap(appLabels),
                 packageMap(appBanners), panelService,
                 panelAction, inputAction,
                 Math.max(1, columns), Math.max(0, rowsBelow), animations, advancedEffects,
                 shamsi, greetingName, moduleCards, reducedMotion, dockTitle, dockRow, reorderButton, vpn, homeSettings, showStats, library, background,
                 Math.max(0, Math.min(100, skyIntensity)), settingsKeycodes, settingsKeyPanel, wallpaperEnabled, wallpaper,
-                wallpapers, rotationMinutes, wallpaperDim, wallpaperChoice, ambientGlow, applied,
+                wallpapers, rotationMinutes, wallpaperDim, wallpaperChoice, ambientGlow, hinduCalendarEnabled, hinduCalendarCount, dockOpacity, applied,
                 festival, inputKeycodes, appKeys, json == null ? Collections.emptyList() : raceCalendar(json), cinematic);
     }
 

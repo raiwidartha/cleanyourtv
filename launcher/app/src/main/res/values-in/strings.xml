@@ -66,4 +66,16 @@
     <plurals name="library_app_count">
         <item quantity="other">%d aplikasi</item>
     </plurals>
+
+    <string name="hindu_calendar_label">Kalender Hari Suci Hindu Bali: %1$s</string>
+    <string name="hindu_calendar_count_label">Jumlah Hari Suci Ditampilkan: %1$d Event</string>
+    <string name="hindu_calendar_count_dialog_title">Jumlah Hari Suci Ditampilkan</string>
+    <string name="hindu_calendar_events_count">%1$d Event Terdekat</string>
+    <string name="dock_opacity_label">Opasitas Latar Dock: %1$s</string>
+    <string name="dock_opacity_dialog_title">Transparansi Latar Dock</string>
+    <string name="dock_opacity_100">100% (Solid / Gelap)</string>
+    <string name="dock_opacity_75">75% (Tegas)</string>
+    <string name="dock_opacity_50">50% (Standar)</string>
+    <string name="dock_opacity_25">25% (Tipis)</string>
+    <string name="dock_opacity_0">0% (Transparan Penuh)</string>
 </resources>

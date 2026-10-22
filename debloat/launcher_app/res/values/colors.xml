@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_translucent">#B3FFFFFF</color>
+    <color name="text_muted">#A0A0A5</color>
+    <color name="glass_bg">#1AFFFFFF</color>
+    <color name="glass_border">#33FFFFFF</color>
+    <color name="glass_focused">#55FFFFFF</color>
+    <color name="dock_band">#14FFFFFF</color>
+    <color name="dock_border">#22FFFFFF</color>
+    <color name="tile_bg">#18181B</color>
+    <color name="tile_focused_stroke">#FFFFFFFF</color>
+    <color name="dropdown_bg">#EB121214</color>
+</resources>

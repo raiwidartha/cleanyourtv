@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Optional Wallpaper Layer -->
+    <ImageView
+        android:id="@+id/iv_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <!-- Ambient Glow View behind active dock title -->
+    <View
+        android:id="@+id/view_ambient_glow"
+        android:layout_width="450dp"
+        android:layout_height="320dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="160dp"
+        android:alpha="0.45" />
+
+    <!-- Main Scrollable Screen -->
+    <ScrollView
+        android:id="@+id/main_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:paddingTop="36dp"
+            android:paddingBottom="64dp">
+
+            <!-- Upper Screen: Top Bar + Title + Dock (Fills initial viewport) -->
+            <LinearLayout
+                android:id="@+id/upper_viewport"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:orientation="vertical">
+
+                <!-- Top Bar: Clock/Greeting on Left, Frosted Pills on Right -->
+                <LinearLayout
+                    android:id="@+id/top_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Clock & Greeting -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_greeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Good evening"
+                            android:textSize="18sp"
+                            android:textColor="@color/white_translucent" />
+
+                        <TextView
+                            android:id="@+id/tv_clock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="18:30"
+                            android:textSize="56sp"
+                            android:textColor="@color/white"
+                            android:includeFontPadding="false" />
+
+                        <TextView
+                            android:id="@+id/tv_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wednesday, October 21"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <!-- Frosted Glass Pill Buttons -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/btn_inputs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:focusable="true"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:text="Inputs"
+                            android:textSize="15sp"
+                            android:textColor="@color/white"
+                            android:background="@drawable/bg_pill_glass"
+                            android:nextFocusDown="@+id/tile_dock_0"
+                            android:nextFocusRight="@+id/btn_wifi" />
+
+                        <TextView
+                            android:id="@+id/btn_wifi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="14dp"
+                            android:focusable="true"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:text="Wi-Fi"
+                            android:textSize="15sp"
+                            android:textColor="@color/white"
+                            android:background="@drawable/bg_pill_glass"
+                            android:nextFocusLeft="@+id/btn_inputs"
+                            android:nextFocusDown="@+id/tile_dock_1"
+                            android:nextFocusRight="@+id/btn_settings" />
+
+                        <TextView
+                            android:id="@+id/btn_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="14dp"
+                            android:focusable="true"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:text="Settings"
+                            android:textSize="15sp"
+                            android:textColor="@color/white"
+                            android:background="@drawable/bg_pill_glass"
+                            android:nextFocusLeft="@+id/btn_wifi"
+                            android:nextFocusDown="@+id/tile_dock_2" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Focused App Title with Ambient Light Effect -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_focused_app_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SmartTube"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="4"
+                        android:shadowRadius="12" />
+                </LinearLayout>
+
+                <!-- Dock Row in Rounded Translucent Shelf -->
+                <LinearLayout
+                    android:id="@+id/dock_shelf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bg_dock"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp">
+
+                    <FrameLayout
+                        android:id="@+id/tile_dock_0"
+                        android:layout_width="180dp"
+                        android:layout_height="102dp"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:background="@drawable/bg_tile_app"
+                        android:nextFocusUp="@+id/btn_inputs" />
+
+                    <FrameLayout
+                        android:id="@+id/tile_dock_1"
+                        android:layout_width="180dp"
+                        android:layout_height="102dp"
+                        android:layout_marginStart="18dp"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:background="@drawable/bg_tile_app"
+                        android:nextFocusUp="@+id/btn_wifi" />
+
+                    <FrameLayout
+                        android:id="@+id/tile_dock_2"
+                        android:layout_width="180dp"
+                        android:layout_height="102dp"
+                        android:layout_marginStart="18dp"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:background="@drawable/bg_tile_app"
+                        android:nextFocusUp="@+id/btn_settings" />
+
+                    <FrameLayout
+                        android:id="@+id/tile_dock_3"
+                        android:layout_width="180dp"
+                        android:layout_height="102dp"
+                        android:layout_marginStart="18dp"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:background="@drawable/bg_tile_app"
+                        android:nextFocusUp="@+id/btn_settings" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- All Apps Grid Section (Scrolls up when pressing Down from dock) -->
+            <TextView
+                android:id="@+id/tv_all_apps_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="All Apps"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_muted" />
+
+            <GridLayout
+                android:id="@+id/grid_all_apps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="4"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Translucent Dropdown Overlay for Inputs -->
+    <LinearLayout
+        android:id="@+id/dropdown_inputs"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="150dp"
+        android:background="@drawable/bg_dropdown"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:elevation="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="TV Inputs"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_muted" />
+
+        <LinearLayout
+            android:id="@+id/dropdown_inputs_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+</FrameLayout>
