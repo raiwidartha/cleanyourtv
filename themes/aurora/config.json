@@ -1,0 +1,27 @@
+{
+  "background_color": "#070A14",
+  "wallpaper": true,
+  "wallpaper_rotation_minutes": 5,
+  "show_stats": true,
+  "ambient_glow": false,
+  "reorder_button": true,
+  "app_library": true,
+  "columns": 5,
+  "rows_below_dock": 0,
+  "hidden_apps": [
+    "com.mediatek.wwtv.tvcenter",
+    "com.mitv.gallery",
+    "com.google.android.webview",
+    "com.mediatek.wwtv.webview",
+    "com.mitv.tvhome.atv",
+    "com.mediatek.tv.service",
+    "com.android.deskclock"
+  ],
+  "dock_apps": [
+    "org.smarttube.stable",
+    "com.netflix.ninja",
+    "com.internet.tvbrowser",
+    "com.alphainventor.filemanager",
+    "com.xiaomi.mitv.tvmanager"
+  ]
+}
