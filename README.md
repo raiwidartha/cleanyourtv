@@ -1,10 +1,11 @@
-# CleanYourTV & Mi TV Debloat Suite (Aurora Edition)
+# Xiaomi Mi TV Debloat & Clean Launcher Suite
 
-> Launcher kustom performa tinggi tanpa iklan dan paket debloat terpadu untuk Android TV, dikustomisasi khusus untuk **Xiaomi Mi TV A2 55\"** (`MiTV-MOOQ1`, Android TV 10).
+> Paket terpadu otomasi debloat, pemulihan sistem, dan launcher performa tinggi tanpa iklan untuk Android TV, dikustomisasi khusus untuk **Xiaomi Mi TV A2 55\"** (`MiTV-MOOQ1`, Android TV 10).
 
 ## Fitur Utama
 
 - **0% Idle Overhead**: Dibangun dengan Java native murni (~390 KB) tanpa daemon latar belakang konstan, hemat RAM & responsif.
+- **Deteksi Luminansi & Keterbacaan Adaptif**: Otomatis menganalisis kecerahan latar belakang wallpaper (algoritma BT.709) dan mengaktifkan lapisan *vignette* halus serta penyesuaian kontras tipografi secara cerdas saat wallpaper cerah dimuat.
 - **5-Kolom Dock Aurora**: Desain dock minimalis berjejer rapi 5 kartu sejajar dengan navigasi D-pad TV presisi.
 - **Kontrol Opasitas Latar Dock**: Tingkat transparansi latar belakang dock dapat diatur langsung di Setelan Launcher (100% Solid, 75% Tegas, 50% Standar, 25% Tipis, 0% Transparan Penuh).
 - **Rotasi Wallpaper Dinamis 1080p**: Otomatis merotasi wallpaper dari `/sdcard/Wallpapers` dengan interval waktu yang dapat diatur (1 menit s/d 1 jam) dan toggle pemati gradien gelap `SkyView`.

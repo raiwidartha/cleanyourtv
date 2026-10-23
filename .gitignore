@@ -21,3 +21,6 @@ launcher/replay_pid*.log
 wallpapers/candidates/
 wallpapers/previews/
 
+debloat/livetv_dex/
+debloat/test_apk/
+debloat/screenshots/
