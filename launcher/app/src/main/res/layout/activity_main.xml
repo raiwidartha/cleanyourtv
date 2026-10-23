@@ -30,6 +30,14 @@
         android:layout_height="match_parent"
         android:alpha="0" />
 
+    <!-- Adaptive readability vignette for top-left content -->
+    <View
+        android:id="@+id/readabilityVignette"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/top_left_vignette"
+        android:importantForAccessibility="no" />
+
     <!-- Race-weekend panel (a theme's race_calendar, see RaceWeekend): in the free space under the clock,
          shown only from shortly before a weekend's first session until the race is over. Updated once a
          minute with the clock, never animated. -->
@@ -223,6 +231,7 @@
                         android:textAllCaps="true" />
 
                     <View
+                        android:id="@+id/headerDivider"
                         android:layout_width="1dp"
                         android:layout_height="26dp"
                         android:layout_gravity="bottom"

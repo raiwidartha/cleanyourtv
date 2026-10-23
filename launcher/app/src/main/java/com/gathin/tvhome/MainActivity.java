@@ -60,6 +60,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -220,6 +221,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private TextView hinduHolyDayView;
     private TextView weatherView;
     private View btnBoost;
+    private TextClock clockView;
+    private TextClock ampmView;
+    private TextClock dateView;
+    private View headerDividerView;
+    private View readabilityVignette;
+    private boolean isWallpaperBright = false;
     /** Refreshes the network pill when the connection changes: at boot Wi-Fi often connects after Home is shown. */
     private final ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
         @Override
@@ -313,6 +320,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         root = findViewById(R.id.root);
         root.setBackgroundColor(cfg.backgroundColor);
         wallpaperPlayer = new WallpaperPlayer(this, root, cfg);
+        wallpaperPlayer.setOnWallpaperContrastListener(this::applyContrastTheme);
         sky = findViewById(R.id.sky);
         if (ambientGlow) {
             sky.setIntensity(cfg.skyIntensity);
@@ -322,6 +330,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         glass = findViewById(R.id.glass);
         if (festive) glass.setAccent(festival.accentColor());
         ambient = findViewById(R.id.ambient);
+        readabilityVignette = findViewById(R.id.readabilityVignette);
         // The glow is one bitmap, so its alpha can be applied while drawing it. Otherwise every frame of
         // a fade renders it into a full-screen offscreen buffer first.
         ambient.forceHasOverlappingRendering(false);
@@ -344,6 +353,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (!cfg.dockTitle) hero.setVisibility(View.GONE);
         greeting = findViewById(R.id.greeting);
         greetingColor = greeting.getCurrentTextColor();
+        clockView = findViewById(R.id.clock);
+        ampmView = findViewById(R.id.ampm);
+        dateView = findViewById(R.id.date);
+        headerDividerView = findViewById(R.id.headerDivider);
         btnWifi = findViewById(R.id.btnWifi);
         shamsiDate = findViewById(R.id.shamsiDate);
         stats = findViewById(R.id.stats);
@@ -521,6 +534,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         hinduHolyDayView = findViewById(R.id.hinduHolyDay);
         weatherView = findViewById(R.id.weather);
+        applyContrastTheme(wallpaperPlayer.isContrastEvaluated() ? wallpaperPlayer.isLastEvaluatedBright() : false);
         updateHinduHolyDay();
         updateWeather();
 
@@ -596,6 +610,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (intent != null && "com.gathin.tvhome.NEXT_WALLPAPER".equals(intent.getAction())) {
+            if (wallpaperPlayer != null) wallpaperPlayer.forceNext();
+            return;
+        }
         if (openLauncherSettingsIfAsked(intent)) return;
         if (intent == null || !intent.hasCategory(Intent.CATEGORY_HOME)) return;
         grid.scrollToPosition(0);
@@ -1847,6 +1865,60 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
     }
 
+    private void applyContrastTheme(boolean isBright) {
+        if (!Looper.getMainLooper().isCurrentThread()) {
+            handler.post(() -> applyContrastTheme(isBright));
+            return;
+        }
+        this.isWallpaperBright = isBright;
+        if (readabilityVignette != null) {
+            float targetAlpha = isBright ? 0.95f : 0.20f;
+            readabilityVignette.animate().alpha(targetAlpha).setDuration(350).start();
+        }
+
+        int primaryText = 0xFFFFFFFF;
+        int secondaryText = 0xE6FFFFFF;
+        int subtleText = 0xD9FFFFFF;
+        int holyDayColor = isBright ? 0xFFFFFFFF : 0xFFFFD54F;
+        int shadowColor = 0xFF000000;
+        float shadowRadius = 8.0f;
+        float shadowDy = 2.0f;
+        int dividerColor = 0x33FFFFFF;
+
+        if (clockView != null) {
+            clockView.setTextColor(primaryText);
+            clockView.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (ampmView != null) {
+            ampmView.setTextColor(subtleText);
+            ampmView.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (dateView != null) {
+            dateView.setTextColor(subtleText);
+            dateView.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (greeting != null) {
+            greetingColor = primaryText;
+            greeting.setTextColor(greetingColor);
+            greeting.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (stats != null) {
+            stats.setTextColor(secondaryText);
+            stats.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (hinduHolyDayView != null) {
+            hinduHolyDayView.setTextColor(holyDayColor);
+            hinduHolyDayView.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (weatherView != null) {
+            weatherView.setTextColor(primaryText);
+            weatherView.setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor);
+        }
+        if (headerDividerView != null) {
+            headerDividerView.setBackgroundColor(dividerColor);
+        }
+    }
+
     private void updateHinduHolyDay() {
         if (hinduHolyDayView == null) return;
         if (!hinduCalendarEnabled) {
@@ -1861,6 +1933,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 sb.append(events.get(i));
             }
             hinduHolyDayView.setText(sb.toString());
+            hinduHolyDayView.setTextColor(isWallpaperBright ? 0xFFFFFFFF : 0xFFFFD54F);
+            hinduHolyDayView.setShadowLayer(8f, 0f, 2f, 0xFF000000);
             hinduHolyDayView.setVisibility(View.VISIBLE);
         } else {
             hinduHolyDayView.setVisibility(View.GONE);
@@ -1872,6 +1946,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         WeatherService.loadWeather(this, text -> {
             if (weatherView != null && text != null && !text.isEmpty()) {
                 weatherView.setText(text);
+                weatherView.setTextColor(0xFFFFFFFF);
+                weatherView.setShadowLayer(8f, 0f, 2f, 0xFF000000);
                 weatherView.setVisibility(View.VISIBLE);
             }
         });
@@ -1892,7 +1968,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         } else {
             greeting.setText(greetingName.isEmpty() ? getString(res)
                     : getString(R.string.greeting_with_name, getString(res), greetingName));
+            greetingColor = 0xFFFFFFFF;
             greeting.setTextColor(greetingColor);
+            greeting.setShadowLayer(8f, 0f, 2f, 0xFF000000);
         }
         if (shamsi) shamsiDate.setText(Shamsi.today());
     }

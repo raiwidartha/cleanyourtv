@@ -34,6 +34,57 @@ final class WallpaperPlayer {
     private boolean loading;
     private String displayed = "";
 
+    interface OnWallpaperContrastListener {
+        void onContrastChanged(boolean isBright);
+    }
+    private OnWallpaperContrastListener contrastListener;
+    private boolean lastEvaluatedBright;
+    private boolean contrastEvaluated;
+
+    void setOnWallpaperContrastListener(OnWallpaperContrastListener listener) {
+        this.contrastListener = listener;
+        if (contrastEvaluated && listener != null) {
+            listener.onContrastChanged(lastEvaluatedBright);
+        }
+    }
+
+    boolean isContrastEvaluated() {
+        return contrastEvaluated;
+    }
+
+    boolean isLastEvaluatedBright() {
+        return lastEvaluatedBright;
+    }
+
+    static boolean isRegionBright(Bitmap bitmap) {
+        if (bitmap == null) return false;
+        try {
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            int sampleW = Math.max(1, (int) (w * 0.30f));
+            int sampleH = Math.max(1, (int) (h * 0.30f));
+            int stepX = Math.max(1, sampleW / 12);
+            int stepY = Math.max(1, sampleH / 12);
+            long total = 0;
+            int count = 0;
+            for (int y = 0; y < sampleH; y += stepY) {
+                for (int x = 0; x < sampleW; x += stepX) {
+                    int p = bitmap.getPixel(x, y);
+                    int r = (p >> 16) & 0xFF;
+                    int g = (p >> 8) & 0xFF;
+                    int b = p & 0xFF;
+                    total += (long) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                    count++;
+                }
+            }
+            double avg = count > 0 ? ((double) total / count) : 0;
+            android.util.Log.i("TvHome.Contrast", "Top-left 30%x30% avg luminance: " + avg + " -> " + (avg > 150.0 ? "BRIGHT" : "DARK"));
+            return avg > 150.0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     WallpaperPlayer(Context context, FrameLayout root, Config config) {
         this.root = root;
         files = new ArrayList<>(config.wallpapers);
@@ -74,6 +125,11 @@ final class WallpaperPlayer {
             if (bitmap != null) {
                 image.setImageBitmap(bitmap);
                 displayed = first.getName();
+                lastEvaluatedBright = isRegionBright(bitmap);
+                contrastEvaluated = true;
+                if (contrastListener != null) {
+                    contrastListener.onContrastChanged(lastEvaluatedBright);
+                }
                 if (!displayed.equals(previous)) {
                     preferences.edit().putString("image", displayed)
                             .putLong("changed", System.currentTimeMillis()).apply();
@@ -92,6 +148,34 @@ final class WallpaperPlayer {
 
     void stop() {
         active = false;
+    }
+
+    void forceNext() {
+        if (files.isEmpty()) return;
+        File next = WallpaperRotation.pick(files, displayed, random);
+        if (next == null) return;
+        loading = true;
+        decoder.execute(() -> {
+            Bitmap bitmap = decode(next);
+            boolean bright = isRegionBright(bitmap);
+            root.post(() -> {
+                loading = false;
+                if (closed || !active) {
+                    if (bitmap != null) bitmap.recycle();
+                    return;
+                }
+                if (bitmap == null) return;
+                image.setImageBitmap(bitmap);
+                displayed = next.getName();
+                lastEvaluatedBright = bright;
+                contrastEvaluated = true;
+                if (contrastListener != null) {
+                    contrastListener.onContrastChanged(lastEvaluatedBright);
+                }
+                preferences.edit().putString("image", displayed)
+                        .putLong("changed", System.currentTimeMillis()).apply();
+            });
+        });
     }
 
     void close() {
@@ -113,6 +197,7 @@ final class WallpaperPlayer {
         loading = true;
         decoder.execute(() -> {
             Bitmap bitmap = decode(next);
+            boolean bright = isRegionBright(bitmap);
             root.post(() -> {
                 loading = false;
                 if (closed || !active) {
@@ -127,6 +212,11 @@ final class WallpaperPlayer {
                 }
                 image.setImageBitmap(bitmap);
                 displayed = next.getName();
+                lastEvaluatedBright = bright;
+                contrastEvaluated = true;
+                if (contrastListener != null) {
+                    contrastListener.onContrastChanged(lastEvaluatedBright);
+                }
                 if (!displayed.equals(previous) || changed == 0) {
                     preferences.edit().putString("image", displayed)
                             .putLong("changed", System.currentTimeMillis()).apply();
