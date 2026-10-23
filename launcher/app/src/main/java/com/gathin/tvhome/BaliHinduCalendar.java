@@ -29,29 +29,61 @@ public final class BaliHinduCalendar {
         ANCHOR_MILLIS = cal.getTimeInMillis();
 
         // Pawukon 210-day cycle rerahinan
+        // Saraswati & Pagerwesi cycle
         PAWUKON_MAP.put(0, "Banyu Pinaruh");
         PAWUKON_MAP.put(1, "Soma Ribek");
         PAWUKON_MAP.put(2, "Sabuh Mas");
         PAWUKON_MAP.put(3, "Hari Raya Pagerwesi");
+
+        // Enam Tumpek (Siklus 35 hari)
         PAWUKON_MAP.put(13, "Tumpek Landep");
-        PAWUKON_MAP.put(48, "Tumpek Wariga");
+        PAWUKON_MAP.put(48, "Tumpek Wariga (Pengatag)");
+        // Day 83: Tumpek Kuningan / Hari Raya Kuningan (defined below)
+        PAWUKON_MAP.put(118, "Tumpek Krulut");
+        PAWUKON_MAP.put(153, "Tumpek Kandang (Uye)");
+        PAWUKON_MAP.put(188, "Tumpek Wayang");
+
+        // Rangkaian Lengkap Galungan & Kuningan
+        PAWUKON_MAP.put(67, "Sugihan Jawa");
         PAWUKON_MAP.put(68, "Sugihan Bali");
-        PAWUKON_MAP.put(71, "Penyekeban Galungan");
+        PAWUKON_MAP.put(70, "Penyekeban Galungan");
+        PAWUKON_MAP.put(71, "Penyajaan Galungan");
         PAWUKON_MAP.put(72, "Penampahan Galungan");
         PAWUKON_MAP.put(73, "Hari Raya Galungan");
         PAWUKON_MAP.put(74, "Umanis Galungan");
         PAWUKON_MAP.put(78, "Pemacekan Agung");
+        PAWUKON_MAP.put(80, "Buda Paing Kuningan");
         PAWUKON_MAP.put(82, "Penampahan Kuningan");
         PAWUKON_MAP.put(83, "Hari Raya Kuningan");
         PAWUKON_MAP.put(84, "Umanis Kuningan");
         PAWUKON_MAP.put(87, "Buda Cemeng Langkir");
-        PAWUKON_MAP.put(118, "Tumpek Krulut");
-        PAWUKON_MAP.put(129, "Buda Wage Merakih");
-        PAWUKON_MAP.put(153, "Tumpek Kandang");
-        PAWUKON_MAP.put(164, "Buda Wage Menail");
-        PAWUKON_MAP.put(188, "Tumpek Wayang");
-        PAWUKON_MAP.put(192, "Buda Cemeng Kulawu");
+        PAWUKON_MAP.put(108, "Pegatwakan (Cabut Penjor)");
+
+        // Enam Buda Cemeng / Buda Wage (Bhatara Rambut Sadhana)
+        PAWUKON_MAP.put(17, "Buda Cemeng Ukir");
+        PAWUKON_MAP.put(52, "Buda Cemeng Warigadean");
+        // Day 87: Buda Cemeng Langkir (defined above)
+        PAWUKON_MAP.put(122, "Buda Cemeng Pujut");
+        PAWUKON_MAP.put(157, "Buda Cemeng Menail");
+        PAWUKON_MAP.put(192, "Buda Cemeng Kulawu (Rambut Sadhana)");
+
+        // Enam Anggar Kasih (Anggara Keliwon)
+        PAWUKON_MAP.put(23, "Anggar Kasih Kulantir");
+        PAWUKON_MAP.put(58, "Anggar Kasih Julungwangi");
+        PAWUKON_MAP.put(93, "Anggar Kasih Medangsia");
+        PAWUKON_MAP.put(128, "Anggar Kasih Tambir");
+        PAWUKON_MAP.put(163, "Anggar Kasih Prangbakat");
         PAWUKON_MAP.put(198, "Anggar Kasih Dukut");
+
+        // Enam Buda Keliwon
+        // Day 3: Pagerwesi (defined above)
+        PAWUKON_MAP.put(38, "Buda Keliwon Gumbreg");
+        // Day 73: Galungan (defined above)
+        // Day 108: Pegatwakan (defined above)
+        PAWUKON_MAP.put(143, "Buda Keliwon Matal");
+        PAWUKON_MAP.put(178, "Buda Keliwon Ugu");
+
+        // Penutup Siklus Watugunung
         PAWUKON_MAP.put(203, "Kajeng Keliwon Pamelastali");
         PAWUKON_MAP.put(209, "Hari Raya Saraswati");
 
