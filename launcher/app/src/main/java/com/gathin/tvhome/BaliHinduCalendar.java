@@ -13,7 +13,7 @@ import java.util.TimeZone;
 public final class BaliHinduCalendar {
 
     private static final Locale INDO = new Locale("in", "ID");
-    private static final SimpleDateFormat FMT_DATE = new SimpleDateFormat("d MMM", INDO);
+    private static final SimpleDateFormat FMT_DATE = new SimpleDateFormat("EEEE, d MMM", INDO);
     private static final SimpleDateFormat FMT_ISO = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     // Anchor: 2026-11-01 is Redite Sinta (day 0 of Pawukon 210-day cycle: Banyu Pinaruh)
@@ -209,9 +209,9 @@ public final class BaliHinduCalendar {
                 String eventName = sb.toString();
                 String dateStr = FMT_DATE.format(targetDate);
                 if (i == 0) {
-                    results.add("🪔 Rahina " + eventName + " (Hari ini)");
+                    results.add("🪔 Rahina " + eventName + " (Hari ini · " + dateStr + ")");
                 } else if (i == 1) {
-                    results.add("🪔 " + eventName + " (Besok, " + dateStr + ")");
+                    results.add("🪔 " + eventName + " (Besok · " + dateStr + ")");
                 } else {
                     results.add("🪔 " + eventName + " (" + dateStr + " · " + i + " hari lagi)");
                 }
