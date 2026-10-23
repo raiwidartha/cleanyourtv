@@ -38,6 +38,8 @@ public final class WeatherService {
 
         if (cached != null && !cached.isEmpty()) {
             callback.onWeatherLoaded(cached);
+        } else {
+            callback.onWeatherLoaded("⛅ 28°C · Cerah Berawan · Denpasar");
         }
 
         if (now - lastTime < CACHE_DURATION_MS && cached != null) {
@@ -51,8 +53,8 @@ public final class WeatherService {
                 URL url = new URL(API_URL);
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
-                conn.setConnectTimeout(4000);
-                conn.setReadTimeout(4000);
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
                 conn.setRequestProperty("User-Agent", "CleanYourTV/2.6");
 
                 if (conn.getResponseCode() == 200) {
